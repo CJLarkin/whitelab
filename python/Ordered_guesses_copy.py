@@ -38,7 +38,7 @@ def ord_fxn(x):
     return sorted_dic
 
 def json_fxn(line):
-    k,v = shlex.split(line)
+    k,v = line
     dic_conf = {'conf' : v}
     dic_smiles = {'smiles' : k}
     dic_img = {'img' : '{}.png'.format(hashlib.md5(k).hexdigest()[:12])}
@@ -76,29 +76,6 @@ def _exec_log(string, arg_dic=None, input=None):
     except OSError as e:
         print >>sys.stderr, 'Execution of {} failed:'.format(string), e
 
-#pic = sys.argv[1]
-pic = 'Good_pic.jpg'
-#dest = sys.argv[2]
-arg_dic = {'-p' : '', '' : pic }
-
-#smile_CV = _exec_log('osra', arg_dic=arg_dic)
-smile_CV = '''C#CCCCC(C(C)C)C -0.130591
-CCCCCC -0.0858108
-CCCCCC 0.0411409
-*CCCCCCC=* -0.800324
-CCCCCC -0.0858108'''
-
-best_guesses_CV = ord_fxn(smile_CV[:-2])
-best_guesses = 
-idx = 0
-for j in best_guesses:
-    idx += 1
-    if idx == 6:
-        break
-    else:
-        print "\"{}\"".format(j)
-
-
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.
 
@@ -130,27 +107,41 @@ def query_yes_no(question, default="yes"):
         else:
             sys.stdout.write("Please respond with 'yes' or 'no'")
 
-ans = query_yes_no('Do you want to save the best guess as a .png file?')
+#pic = sys.argv[1]
+pic = 'Good_pic.jpg'
+arg_dic = {'-p' : '', '' : pic }
+
+#smile_CV = _exec_log('osra', arg_dic=arg_dic)
+smile_CV = '''C#CCCCC(C(C)C)C -0.130591
+CCCCCC -0.0858108
+CCCCCC 0.0411409
+*CCCCCCC=* -0.800324
+CCCCCC -0.0858108'''
+
+best_guesses_CV = ord_fxn(smile_CV[:-2])
+best_guesses = dic_fxn(smile_CV[:-2])
+idx = 0
+for j in best_guesses:
+    idx += 1
+    if idx == 6:
+        break
+    else:
+        print "\"{}\"".format(j)
+
+dic_list = []
+for line in best_guesses_CV:
+    dic_list.append(json_fxn(line))
+json_list = json.dumps(dic_list)
+print json_list
+
+ans = query_yes_no('Do you want to save the best guesses as a .png file?')
 
 if ans == True:
-    nm_list = []
     for element in best_guesses:
         hash_nm = hashlib.md5(element).hexdigest()[:12]
         m = Chem.MolFromSmiles(element)
         img = Draw.MolToImage(m)
-        #img.save('{}.png'.format(hash_nm))
+        img.save('{}.png'.format(hash_nm))
 
-by_lines = smile_CV[:-2].split('\n')
-dic_list = []
-for line in by_lines:
-    dic_list.append(json_fxn(line))
-json_list = json.dumps(dic_list, sort_keys=True)
-#print sorted(json_list,key=operator.itemgetter(1))
-count = 0
-#conf_list = {}
-for l in json_list:
-    count += 1
-    n = int(count-1)
-    #conf_list.append(dic_list[n][0])
-    #print sorted(json_list, key=operator.itemgetter(1)(json_list[n]))
-#print sorted(conf_list.items(), key=operator.itemgetter(1))
+#if __name__=='__main__':
+	#unittest.main()
