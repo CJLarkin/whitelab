@@ -91,19 +91,19 @@ def main():
         else:
             print "\"{}\"".format(j)
 
-    dic_list = []
-    for line in best_guesses_CV:
-        dic_list.append(json_fxn(line))
-    json_list = json.dumps(dic_list)
-    print json_list
-
     for element in best_guesses:
         hash_nm = hashlib.md5(element).hexdigest()[:12]
         m = Chem.MolFromSmiles(element)
         img = Draw.MolToImage(m)
         img.save('{}.png'.format(hash_nm))
 
+    dic_list = []
+    for line in best_guesses_CV:
+        dic_list.append(json_fxn(line))
+    json_list = json.dumps(dic_list)
+    print json_list
+
 if __name__=='__main__':
-	unittest.main()
+	main()
 
 
