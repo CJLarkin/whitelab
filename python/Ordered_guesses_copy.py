@@ -7,7 +7,6 @@ Created on Fri Jun  5 13:40:34 2015
 
 import sys
 import os
-from os.path import expanduser, join
 import logging
 import subprocess
 from rdkit import Chem
@@ -17,6 +16,7 @@ import shlex
 import hashlib
 import json
 import operator
+import urllib
 sys.modules['Image'] = PIL.Image
 
 def dic_fxn(x):    
@@ -41,7 +41,7 @@ def json_fxn(line):
     k,v = line
     dic_conf = {'conf' : v}
     dic_smiles = {'smiles' : k}
-    dic_img = {'img' : '{}.png'.format(hashlib.md5(k).hexdigest()[:12])}
+    dic_img = {'img' : '{}'.format(urllib.quote(open("{}.png".format(hashlib.md5(k).hexdigest()[:12]), "rb").read().encode("base64")))}
     return dic_conf,dic_img,dic_smiles
 
 def _exec_log(string, arg_dic=None, input=None):
@@ -135,7 +135,6 @@ json_list = json.dumps(dic_list)
 print json_list
 
 ans = query_yes_no('Do you want to save the best guesses as a .png file?')
-
 if ans == True:
     for element in best_guesses:
         hash_nm = hashlib.md5(element).hexdigest()[:12]
