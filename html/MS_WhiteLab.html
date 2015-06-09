@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>SDF Structure Using RDKit</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="http://thewhitelab.org/css/main.css" />
+    <link rel="shortcut icon" href="http://thewhitelab.org/assets/img/logo1.png" />
+    <link href='http://fonts.googleapis.com/css?family=Oswald|Lato' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://thewhitelab.org/js/handlebars.runtime-v2.0.0.js"></script>
+    <script src="http://thewhitelab.org/js/base.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+</head>
+
+<body>
+    <nav id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://thewhitelab.org"><img alt="Brand" src="http://thewhitelab.org/assets/img/logo.png"></a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="nav-home"><a href="http://thewhitelab.org/#home">Home<span class="sr-only">(current)</span></a></li>
+                    <li class="nav-research"><a href="http://thewhitelab.org/Research/">Research</a></li>
+                    <li class="nav-people"><a href="http://thewhitelab.org/People/">People</a></li>
+                    <!--        <li class="nav-software"><a href="http://thewhitelab.org/Software/">Software</a></li>!-->
+                    <li class="nav-publications"><a href="http://thewhitelab.org/Publications/">Publications</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right hidden-sm hidden-xs">
+                    <li>
+                        <a style="padding-top: 5px; padding-bottom: 5px;" href="http://www.rochester.edu"><img src="http://thewhitelab.org/assets/img/long-logo-text.png" /></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+
+
+    <div class="dark-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 white-back">
+                    <h4>Enter your Sequence, from N-terminus to C-terminus</h4>
+                    <div class="input-group" align="center">
+                        <!--input id="sequence" type="text" class="form-control" placeholder="HEKEKGDR"-->
+                        <input type="file" id="myFile">
+                    </div>
+                    <br/>
+                    <div style="width=60px height=60px border=10px">
+                        
+                    </div>
+
+                        <div class="panel panel-default">
+                        <label>First Criteria:</label> 
+                            <div class="btn-group" data-toggle="buttons">
+                              <label class="btn btn-primary active">
+                                <input type="checkbox" autocomplete="off" checked> C1A
+                              </label>
+                              <label class="btn btn-primary">
+                                <input type="checkbox" autocomplete="off"> C1B
+                              </label>
+                              <label class="btn btn-primary">
+                                <input type="checkbox" autocomplete="off"> C1C
+                              </label>
+                            </div>
+                        <br>
+                        <div class="btn-group" data-toggle="buttons">
+                        
+                          <label class="btn btn-primary active">
+                            <input type="checkbox" autocomplete="off" checked> C2A
+                          </label>
+                          <label class="btn btn-primary">
+                            <input type="checkbox" autocomplete="off"> C2B
+                          </label>
+                          <label class="btn btn-primary">
+                            <input type="checkbox" autocomplete="off"> C2C
+                          </label>
+                        </div>
+
+                    </div>
+                    <button id="button">Submit to Database</button>
+                    <div id="seq-plot" class="canvas-div">
+                    </div>
+                    <div id="val-plot" class="canvas-div">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h2 class="h2 inverted-text"> The White <br/>Laboratory</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <table class="inverted-text">
+                        <tr>
+                            <td> Prof. Andrew White</td>
+                        </tr>
+                        <tr>
+                            <td><a href="mailto:andrew.white@rochester.edu"> andrew.white@rochester.edu</a></td>
+                        </tr>
+                        <tr>
+                            <td> Gavett 208C </td>
+                        </tr>
+                        <tr>
+                            <td> University of Rochester</td>
+                        </tr>
+                        <tr>
+                            <td> Rochester, NY 14627-0166</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-3">
+                    <table class="inverted-text">
+                        <tr>
+                            <td><a href="/Research"> Research</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="/People"> People</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="/Publications"> Publications</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="#"> Software</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-3">
+                    <table class="inverted-text">
+                        <tr>
+                            <td><a href="#"> Jobs</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="http://www.rochester.edu"> University of Rochester</a></td>
+                        </tr>
+                        <tr>
+                            <td><a href="http://www.che.rochester.edu/"> UR Chemical Engineering </a></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-3 footer-logo">
+                    <img src="http://thewhitelab.org/assets/img/footer-logo.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</body>
+
+<script>
+    $(document).ready(function() {
+
+        d3.json("https://gist.githubusercontent.com/whitead/a70af6eca28753e6cf0d/raw/6afb94210a1cddda71cbd32a9dd265b462819338/milton.json", function(error, json) {
+            if (error) {
+                console.warn(error);
+                return;
+            }
+            global_pc_data = json;
+            global_val_plot = new Scatter();
+            global_seq_plot = new SequencePlot();
+            global_val_plot.draw(d3.select("#val-plot").style("width", "100%").style("height", "325px"), 520, 250, "Position", "Relative Easy of Synthesis");
+            global_seq_plot.draw(d3.select("#seq-plot").style("width", "650px").style("min-height", "200px"), 500, 250, highlightAA);
+
+        });
+
+        $('#sequence').keydown(function(event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                updateSequence();
+            }
+        });
+        $('#predict-button').on('click', updateSequence);
+    });
+</script>
+
+
+
+<script src="http://thewhitelab.org/assets/templates/compiled.js" />
+<script src="http://thewhitelab.org/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        layout_thumbs();
+    });
+</script>
+
+
+
+</html>
