@@ -69,10 +69,10 @@ def _exec_log(string, arg_dic=None, input=None):
     except OSError as e:
         print >>sys.stderr, 'Execution of {} failed:'.format(string), e
 
-def main():
-    pic = sys.argv[1]
-    #pic = 'Good_pic.jpg'
-    arg_dic = {'-p' : '', '' : pic }
+def main(pic):
+    #pic = sys.argv[1]
+    #pic = 'good_pic_copy.jpg'
+    arg_dic = {'-j':'', '-i':'', '-p' : '', '' : pic }
 
     smile_CV = _exec_log('osra', arg_dic=arg_dic)
     #smile_CV = '''C#CCCCC(C(C)C)C -0.130591
@@ -89,21 +89,24 @@ def main():
         if idx == 6:
             break
         else:
-            print "\"{}\"".format(j)
+            #print "\"{}\"".format(j)
+            first = 1
 
     for element in best_guesses:
-        hash_nm = hashlib.md5(element).hexdigest()[:12]
-        m = Chem.MolFromSmiles(element)
-        img = Draw.MolToImage(m)
-        img.save('{}.png'.format(hash_nm))
+        try:
+            hash_nm = hashlib.md5(element).hexdigest()[:12]
+            m = Chem.MolFromSmiles(element)
+            img = Draw.MolToImage(m)
+            img.save('{}.png'.format(hash_nm))
+        except ValueError:
+            print "Oops, this is one of the simles RDKit can't read!"
+            break
 
     dic_list = []
     for line in best_guesses_CV:
         dic_list.append(json_fxn(line))
     json_list = json.dumps(dic_list)
-    print json_list
+    return json_list
 
 if __name__=='__main__':
-	main()
-
-
+	print main()
