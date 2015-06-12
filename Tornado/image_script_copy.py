@@ -45,6 +45,7 @@ def _exec_log(string, arg_dic=None, input=None):
         for k,v in arg_dic.iteritems():
             string += ' {} {}'.format(k,v)
     logging.info('Running {} with arguments'.format(string))
+    print 'Running {} with arguments'.format(string)
     try:
         process = subprocess.Popen(string, shell=True,
                                    stdout=subprocess.PIPE,
@@ -69,12 +70,13 @@ def _exec_log(string, arg_dic=None, input=None):
     except OSError as e:
         print >>sys.stderr, 'Execution of {} failed:'.format(string), e
 
-def main(pic):
+def end(pic):
     #pic = sys.argv[1]
     #pic = 'good_pic_copy.jpg'
-    arg_dic = {'-j':'', '-i':'', '-p' : '', '' : pic }
+    arg_dic = {'-j':'','-i':'','-p' : pic}
 
     smile_CV = _exec_log('osra', arg_dic=arg_dic)
+    print smile_CV
     #smile_CV = '''C#CCCCC(C(C)C)C -0.130591
     #CCCCCC -0.0858108
     #CCCCCC 0.0411409
@@ -106,7 +108,8 @@ def main(pic):
     for line in best_guesses_CV:
         dic_list.append(json_fxn(line))
     json_list = json.dumps(dic_list)
+    #print(json_list)
     return json_list
 
 if __name__=='__main__':
-	print main()
+	print end()

@@ -1,5 +1,7 @@
 import tornado.httpserver, tornado.ioloop, tornado.options, tornado.web, os.path, random, string
 from tornado.options import define, options
+import time
+import threading
 from image_script_copy import *
 
 
@@ -23,10 +25,13 @@ class UploadHandler(tornado.web.RequestHandler):
         original_fname = file1['filename']
         extension = os.path.splitext(original_fname)[1]
         fname = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(6))
-        final_filename= fname+extension
+        final_filename = fname+extension
         output_file = open("uploads/" + final_filename, 'w')
         output_file.write(file1['body'])
-        self.finish("file" + final_filename + " is uploaded")
+        output_file.close()
+        img = 'uploads/{}'.format(final_filename)
+        out = end('{}'.format(img))
+        self.finish('{}'.format(out))
 
 def main():
     http_server = tornado.httpserver.HTTPServer(Application())
@@ -35,3 +40,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
