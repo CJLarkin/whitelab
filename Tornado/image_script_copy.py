@@ -34,7 +34,7 @@ def json_fxn(line):
     k,v = line
     dic_conf = {'conf' : v}
     dic_smiles = {'smiles' : k}
-    dic_img = {'img' : '{}'.format(urllib.quote(open("{}.png".format(hashlib.md5(k).hexdigest()[:12]), "rb").read().encode("base64")))}
+    dic_img = {'img' : 'data:image/png;base64, {}'.format(urllib.quote(open("{}.png".format(hashlib.md5(k).hexdigest()[:12]), "rb").read().encode("base64")))}
     return dic_conf,dic_img,dic_smiles
 
 def _exec_log(string, arg_dic=None, input=None):
@@ -45,7 +45,6 @@ def _exec_log(string, arg_dic=None, input=None):
         for k,v in arg_dic.iteritems():
             string += ' {} {}'.format(k,v)
     logging.info('Running {} with arguments'.format(string))
-    print 'Running {} with arguments'.format(string)
     try:
         process = subprocess.Popen(string, shell=True,
                                    stdout=subprocess.PIPE,
