@@ -6,6 +6,8 @@ import threading
 from image_script_copy import *
 import base64
 import os
+from PIL import Image
+import cStringIO
 
 
 define("port", default=8888, help="run on the given port", type=int)
@@ -19,25 +21,31 @@ class Application(tornado.web.Application):
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
-        img = self.get_argument('img','')
-        img_recovered = base64.decodestring(img)
-        #f = open("temp.png", "w")
-        #f.write(img_recovered)
-        #f.close()
+        image = self.get_argument('img', '')
+        #img_recovered = base64.decodestring(img)
         #file1 = self.request.files['img_recovered'][0]
         #original_fname = file1['filename']
         #extension = os.path.splitext(original_fname)[1]
-        print img_recovered
-        #fname = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(6))
+        fname = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(6))
         #final_filename = fname+extension
         #output_file = open("uploads/" + final_filename, 'w')
         #output_file.write(file1['body'])
         #output_file.close()
-        print 'recieved post'
-        #self.add_header('Access-Control-Allow-Origin', '*')
+        #print 'recieved post'
+        self.add_header('Access-Control-Allow-Origin', '*')
+        pic = cStringIO.StringIO()
+        image_string = cStringIO.StringIO(base64.b64decode(image))
+        image = Image.open(image_string)
+        image.save(pic, image.format)
+        #pic.seek(0)
+        #f = Image.open("{}.jpg".format(fname), "wb")
+        #f.save(image.decode('base64'))
+        #f.close()
+        #with open("{}.jpg".format(fname),"wb") as f:
+            #f.write(base64.decodestring(img))
         #image = 'uploads/{}'.format(final_filename)
-        #out = end('{}'.format(image))
-        #self.finish('{}'.format(out))
+        out = end('{}'.format(f))
+        self.finish('{}'.format(out))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
