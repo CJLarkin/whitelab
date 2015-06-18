@@ -22,7 +22,7 @@ class Application(tornado.web.Application):
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         image = self.get_argument('img', '')
-        #img_recovered = base64.decodestring(img)
+        #img_recovered = base64.decodestring(image)
         #file1 = self.request.files['img_recovered'][0]
         #original_fname = file1['filename']
         #extension = os.path.splitext(original_fname)[1]
@@ -33,19 +33,21 @@ class UploadHandler(tornado.web.RequestHandler):
         #output_file.close()
         #print 'recieved post'
         self.add_header('Access-Control-Allow-Origin', '*')
-        pic = cStringIO.StringIO()
-        image_string = cStringIO.StringIO(base64.b64decode(image))
-        image = Image.open(image_string)
-        image.save(pic, image.format)
+        #pic = cStringIO.StringIO()
+        #image_string = cStringIO.StringIO(base64.b64decode(image))
+        #image = Image.open(image_string)
+        #image.save(pic, image.format)
         #pic.seek(0)
-        #f = Image.open("{}.jpg".format(fname), "wb")
-        #f.save(image.decode('base64'))
-        #f.close()
+        f = open("{}.txt".format(fname), "wb")
+        f.write(image)
+        f.close()
+        f.open('r')
+        img = base64.b64decode(f.read())
         #with open("{}.jpg".format(fname),"wb") as f:
             #f.write(base64.decodestring(img))
         #image = 'uploads/{}'.format(final_filename)
-        out = end('{}'.format(f))
-        self.finish('{}'.format(out))
+        out = end(img)
+        #self.finish('{}'.format(out))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
