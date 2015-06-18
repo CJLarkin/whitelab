@@ -75,7 +75,6 @@ def end(pic):
     arg_dic = {'-j':'','-i':'','-p' : pic}
 
     smile_CV = _exec_log('osra', arg_dic=arg_dic)
-    print smile_CV
     #smile_CV = '''C#CCCCC(C(C)C)C -0.130591
     #CCCCCC -0.0858108
     #CCCCCC 0.0411409
@@ -84,14 +83,13 @@ def end(pic):
 
     best_guesses_CV = ord_fxn(smile_CV[:-2])
     best_guesses = dic_fxn(smile_CV[:-2])
-    idx = 0
-    for j in best_guesses:
-        idx += 1
-        if idx == 6:
-            break
-        else:
+    #idx = 0
+    #for j in best_guesses:
+        #idx += 1
+        #if idx == 6:
+            #break
+        #else:
             #print "\"{}\"".format(j)
-            first = 1
 
     for element in best_guesses:
         try:
@@ -100,7 +98,7 @@ def end(pic):
             img = Draw.MolToImage(m)
             img.save('{}.png'.format(hash_nm))
         except ValueError:
-            print "Oops, this is one of the simles RDKit can't read!"
+            print "RDKit can't read this smiles!"
             break
 
     dic_list = []
@@ -109,6 +107,7 @@ def end(pic):
     json_list = json.dumps(dic_list)
     #print(json_list)
     return json_list
+    #return dic_list
 
 if __name__=='__main__':
 	print end()

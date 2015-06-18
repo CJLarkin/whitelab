@@ -34,6 +34,7 @@ class Application(tornado.web.Application):
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
+        self.add_header('Access-Control-Allow-Origin', '*')
         image = self.get_argument('img', '')
         fname = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(6))
         m = re.search('^data:image/([a-z]*);base64,(.*)', image)
@@ -41,7 +42,6 @@ class UploadHandler(tornado.web.RequestHandler):
             raise ValueError('Could not read POSTed image')
         extension = '.' + m.group(1)
         fname = fname+extension
-        self.add_header('Access-Control-Allow-Origin', '*')
         with open(fname, "wb") as f:
             f.write(decode_base64(m.group(2)))
         out = end(fname)
