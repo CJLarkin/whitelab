@@ -4,10 +4,23 @@ from tornado_cors import CorsMixin
 import time
 import threading
 from image_script_copy import *
-import base64
+import base64, re
 import os
 from PIL import Image
 import cStringIO
+
+def decode_base64(data):
+    """Decode base64, padding being optional.
+
+    :param data: Base64 data as an ASCII byte string
+    :returns: The decoded byte string.
+
+    """
+    missing_padding = 4 - len(data) % 4
+    if missing_padding:
+        data += b'='* missing_padding
+    return base64.decodestring(data)
+
 
 
 define("port", default=8888, help="run on the given port", type=int)
@@ -22,32 +35,17 @@ class Application(tornado.web.Application):
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         image = self.get_argument('img', '')
-        #img_recovered = base64.decodestring(image)
-        #file1 = self.request.files['img_recovered'][0]
-        #original_fname = file1['filename']
-        #extension = os.path.splitext(original_fname)[1]
         fname = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(6))
-        #final_filename = fname+extension
-        #output_file = open("uploads/" + final_filename, 'w')
-        #output_file.write(file1['body'])
-        #output_file.close()
-        #print 'recieved post'
+        m = re.search('^data:image/([a-z]*);base64,(.*)', image)
+        if(not m):
+            raise ValueError('Could not read POSTed image')
+        extension = '.' + m.group(1)
+        fname = fname+extension
         self.add_header('Access-Control-Allow-Origin', '*')
-        #pic = cStringIO.StringIO()
-        #image_string = cStringIO.StringIO(base64.b64decode(image))
-        #image = Image.open(image_string)
-        #image.save(pic, image.format)
-        #pic.seek(0)
-        f = open("{}.txt".format(fname), "wb")
-        f.write(image)
-        f.close()
-        f.open('r')
-        img = base64.b64decode(f.read())
-        #with open("{}.jpg".format(fname),"wb") as f:
-            #f.write(base64.decodestring(img))
-        #image = 'uploads/{}'.format(final_filename)
-        out = end(img)
-        #self.finish('{}'.format(out))
+        with open(fname, "wb") as f:
+            f.write(decode_base64(m.group(2)))
+        out = end(fname)
+        self.finish('{}'.format(out))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
