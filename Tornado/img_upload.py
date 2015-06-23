@@ -4,7 +4,7 @@ from tornado_cors import CorsMixin
 import time
 import threading
 from image_script_copy import *
-import base64, re
+import base64, re, json
 import os
 from PIL import Image
 import cStringIO
@@ -45,7 +45,7 @@ class UploadHandler(tornado.web.RequestHandler):
         with open(fname, "wb") as f:
             f.write(decode_base64(m.group(2)))
         out = end(fname)
-        self.finish('{}'.format(out))
+        self.finish('{}'.format(json.dumps(out)))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 

@@ -32,7 +32,7 @@ def ord_fxn(x):
 
 def json_fxn(line):
     k,v = line
-    dic_total = {'conf' : v, 'smiles' : k, 'img' : '{}'.format(urllib.quote(open("{}.png".format(hashlib.md5(k).hexdigest()[:12]), "rb").read().encode("base64")))}
+    dic_total = {"conf" : v, "smiles" : k, "img" : "{}".format(urllib.quote(open("{}.png".format(hashlib.md5(k).hexdigest()[:12]), "rb").read().encode("base64")))}
     #dic_conf = {'conf' : v}
     #dic_smiles = {'smiles' : k}
     #dic_img = {'img' : '{}'.format(urllib.quote(open("{}.png".format(hashlib.md5(k).hexdigest()[:12]), "rb").read().encode("base64")))}
@@ -105,11 +105,11 @@ def end(pic):
 
     dic_list = []
     for line in best_guesses_CV:
-        dic_list.append(json_fxn(line))
-        #json_list = json.dumps(json_fxn(line))
+        json_list = json_fxn(line)
+        return json_list
         
     #print(json_list)
-    return dic_list
+    #return dic_list
     #return dic_list
 
 if __name__=='__main__':
