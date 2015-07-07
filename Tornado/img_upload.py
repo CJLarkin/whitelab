@@ -28,7 +28,8 @@ define("port", default=8888, help="run on the given port", type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", UploadHandler)
+            (r"/", UploadHandler),
+            (r"/DataBaseUpload", DBHandler)
         ]
         tornado.web.Application.__init__(self, handlers)
 
@@ -46,6 +47,11 @@ class UploadHandler(tornado.web.RequestHandler):
             f.write(decode_base64(m.group(2)))
         out = end(fname)
         self.finish('{}'.format(json.dumps(out)))
+
+class DBHandler(tornado.web.RequestHandler):
+    def post(self):
+        self.add_header('Access-Control-Allow-Origin', '*')
+        self.finish('Hello World')
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
