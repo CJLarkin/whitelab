@@ -4,6 +4,7 @@ from tornado_cors import CorsMixin
 import time
 import threading
 from image_script_copy import *
+from database import *
 import base64, re, json
 import os
 from PIL import Image
@@ -51,7 +52,15 @@ class UploadHandler(tornado.web.RequestHandler):
 class DBHandler(tornado.web.RequestHandler):
     def post(self):
         self.add_header('Access-Control-Allow-Origin', '*')
-        self.finish('Hello World')
+        smiles = self.get_argument('smiles','')
+        tt = self.get_argument('tt','')
+        tm = self.get_argument('tm','')
+        vis = self.get_argument('vis','')
+        frag = self.get_argument('frag','')
+        cit = self.get_argument('cit','')
+        Abs = self.get_argument('abs','')
+        db = db_edit(smiles, tt, tm, vis, frag, cit, Abs)
+        self.finish('{}'.format(db))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
