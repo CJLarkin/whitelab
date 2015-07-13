@@ -5,6 +5,7 @@ import time
 import threading
 from image_script_copy import *
 from database import *
+from inchi_to_smiles import *
 import base64, re, json
 import os
 from PIL import Image
@@ -30,7 +31,9 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", UploadHandler),
-            (r"/DataBaseUpload", DBHandler)
+            (r"/DataBaseUpload", DBHandler),
+            (r"/conversion", ConvHandler),
+            (r"/query", QueryHandler)
         ]
         tornado.web.Application.__init__(self, handlers)
 
@@ -61,6 +64,20 @@ class DBHandler(tornado.web.RequestHandler):
         Abs = self.get_argument('abs','')
         db = db_edit(smiles, tt, tm, vis, frag, cit, Abs)
         self.finish('{}'.format(db))
+
+class ConvHandler(tornado.web.RequestHandler):
+    def post(self):
+        self.add_header('Access-Control-Allow-Origin', '*')
+        inchi = self.get_argument('inchi','')
+        smiles = conv(inchi)
+        self.finish('{}'.format(smiles))
+
+class QueryHandler(tornado.web.RequestHandler):
+    def post(self):
+        self.add_header('Access-Control-Allow-Origin', '*')
+        query = self.get_argument('query','')
+        result = db_search(query)
+        self.finish('{}'.format(json.dumps(result)))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
