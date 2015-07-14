@@ -19,8 +19,23 @@ def db_search(query):
 	#return (c.fetchall())
 	c.execute("SELECT * FROM GLC WHERE SMILES=?", (query,))
 	all_rows = c.fetchall()
-	json_dic = {"smiles": all_rows[0][0].encode("ascii"), "tt": all_rows[0][1], "tm": all_rows[0][2], "vis": all_rows[0][3], "frag": all_rows[0][4], "cit": all_rows[0][5], "abs": all_rows[0][6].encode("ascii")}
-	return json_dic
+	try:
+		json_dic = {"smiles": all_rows[0][0].encode("ascii"), "tt": all_rows[0][1], "tm": all_rows[0][2], "vis": all_rows[0][3], "frag": all_rows[0][4], "cit": all_rows[0][5], "abs": all_rows[0][6].encode("ascii")}
+		return json_dic
+	except IndexError:
+		return None
+
+def db_update(smiles, tt, tm, vis, frag, cit, Abs):
+	conn = sqlite3.connect('GLC.db')
+	c = conn.cursor()
+	c.execute("UPDATE GLC SET TT=tt WHERE SMILES=smiles")
+	c.execute("UPDATE GLC SET TM=tm WHERE SMILES=smiles")
+	c.execute("UPDATE GLC SET Viscocity=vis WHERE SMILES=smiles")
+	c.execute("UPDATE GLC SET Fragility=frag WHERE SMILES=smiles")
+	c.execute("UPDATE GLC SET Citation=cit WHERE SMILES=smiles")
+	c.execute("UPDATE GLC SET Abstract=Abs WHERE SMILES=smiles")
+	conn.commit()
+	conn.close()
 
 if __name__ == "__main__":
     #db_edit(smiles, tt, tm, vis, frag, cit, Abs)

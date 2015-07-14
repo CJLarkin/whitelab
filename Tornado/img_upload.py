@@ -33,7 +33,8 @@ class Application(tornado.web.Application):
             (r"/", UploadHandler),
             (r"/DataBaseUpload", DBHandler),
             (r"/conversion", ConvHandler),
-            (r"/query", QueryHandler)
+            (r"/query", QueryHandler),
+            (r"/DataBaseUpdate", DBUpdateHandler)
         ]
         tornado.web.Application.__init__(self, handlers)
 
@@ -62,8 +63,8 @@ class DBHandler(tornado.web.RequestHandler):
         frag = self.get_argument('frag','')
         cit = self.get_argument('cit','')
         Abs = self.get_argument('abs','')
-        db = db_edit(smiles, tt, tm, vis, frag, cit, Abs)
-        self.finish('{}'.format(db))
+        db_entry = db_edit(smiles, tt, tm, vis, frag, cit, Abs)
+        self.finish('{}'.format(db_entry))
 
 class ConvHandler(tornado.web.RequestHandler):
     def post(self):
@@ -78,6 +79,19 @@ class QueryHandler(tornado.web.RequestHandler):
         query = self.get_argument('query','')
         result = db_search(query)
         self.finish('{}'.format(json.dumps(result)))
+
+class DBUpdateHandler(tornado.web.RequestHandler):
+    def post(self):
+        self.add_header('Access-Control-Allow-Origin', '*')
+        smiles = self.get_argument('smiles','')
+        tt = self.get_argument('tt','')
+        tm = self.get_argument('tm','')
+        vis = self.get_argument('vis','')
+        frag = self.get_argument('frag','')
+        cit = self.get_argument('cit','')
+        Abs = self.get_argument('abs','')
+        db_up = db_update(smiles, tt, tm, vis, frag, cit, Abs)
+        self.finish('{}'.format(db_up))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
 
