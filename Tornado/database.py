@@ -28,12 +28,12 @@ def db_search(query):
 def db_update(smiles, tt, tm, vis, frag, cit, Abs):
 	conn = sqlite3.connect('GLC.db')
 	c = conn.cursor()
-	c.execute("UPDATE GLC SET TT=tt WHERE SMILES=smiles")
-	c.execute("UPDATE GLC SET TM=tm WHERE SMILES=smiles")
-	c.execute("UPDATE GLC SET Viscocity=vis WHERE SMILES=smiles")
-	c.execute("UPDATE GLC SET Fragility=frag WHERE SMILES=smiles")
-	c.execute("UPDATE GLC SET Citation=cit WHERE SMILES=smiles")
-	c.execute("UPDATE GLC SET Abstract=Abs WHERE SMILES=smiles")
+	c.execute("UPDATE GLC SET TT=? WHERE SMILES=smiles", (tt,))
+	c.execute("UPDATE GLC SET TM=? WHERE SMILES=smiles", (tm,))
+	c.execute("UPDATE GLC SET Viscocity=? WHERE SMILES=smiles", (vis,))
+	c.execute("UPDATE GLC SET Fragility=? WHERE SMILES=smiles", (frag,))
+	c.execute("UPDATE GLC SET Citation=? WHERE SMILES=smiles", (cit,))
+	c.execute("UPDATE GLC SET Abstract=? WHERE SMILES=smiles", (Abs,))
 	conn.commit()
 	conn.close()
 
