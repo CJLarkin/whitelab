@@ -4,7 +4,6 @@ import sys
 def db_edit(smiles, tt, tm, vis, frag, cit, Abs):
 	conn = sqlite3.connect('GLC.db')
 	c = conn.cursor()
-
 	#conn.execute("CREATE TABLE GLC(SMILES, TT INT, TM INT, Viscocity INT, Fragility INT, Citation INT, Abstract TEXT)")
 	#conn.execute("alter table GLC add column SMILES, TT, TM, Viscocity, Fragility, Citation, Abstract")
 	statement = "INSERT INTO GLC (SMILES, TT, TM, Viscocity, Fragility, Citation, Abstract) VALUES ('{0}',{1},{2},{3},{4},{5},'{6}')".format(smiles, tt, tm, vis, frag, cit, Abs)
@@ -28,12 +27,12 @@ def db_search(query):
 def db_update(smiles, tt, tm, vis, frag, cit, Abs):
 	conn = sqlite3.connect('GLC.db')
 	c = conn.cursor()
-	c.execute("UPDATE GLC SET TT=? WHERE SMILES=smiles", (tt,))
-	c.execute("UPDATE GLC SET TM=? WHERE SMILES=smiles", (tm,))
-	c.execute("UPDATE GLC SET Viscocity=? WHERE SMILES=smiles", (vis,))
-	c.execute("UPDATE GLC SET Fragility=? WHERE SMILES=smiles", (frag,))
-	c.execute("UPDATE GLC SET Citation=? WHERE SMILES=smiles", (cit,))
-	c.execute("UPDATE GLC SET Abstract=? WHERE SMILES=smiles", (Abs,))
+	c.execute("UPDATE GLC SET TT=? WHERE SMILES=?", (tt,smiles))
+	c.execute("UPDATE GLC SET TM=? WHERE SMILES=?", (tm,smiles))
+	c.execute("UPDATE GLC SET Viscocity=? WHERE SMILES=?", (vis,smiles))
+	c.execute("UPDATE GLC SET Fragility=? WHERE SMILES=?", (frag,smiles))
+	c.execute("UPDATE GLC SET Citation=? WHERE SMILES=?", (cit,smiles))
+	c.execute("UPDATE GLC SET Abstract=? WHERE SMILES=?", (Abs,smiles))
 	conn.commit()
 	conn.close()
 
