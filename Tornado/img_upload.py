@@ -62,8 +62,7 @@ class DBHandler(tornado.web.RequestHandler):
         vis = self.get_argument('vis','')
         frag = self.get_argument('frag','')
         cit = self.get_argument('cit','')
-        Abs = self.get_argument('abs','')
-        db_entry = db_edit(smiles, tt, tm, vis, frag, cit, Abs)
+        db_entry = db_edit(smiles, tt, tm, vis, frag, cit)
         self.finish('{}'.format(db_entry))
 
 class ConvHandler(tornado.web.RequestHandler):
@@ -89,8 +88,7 @@ class DBUpdateHandler(tornado.web.RequestHandler):
         vis = self.get_argument('vis','')
         frag = self.get_argument('frag','')
         cit = self.get_argument('cit','')
-        Abs = self.get_argument('abs','')
-        db_up = db_update(smiles, tt, tm, vis, frag, cit, Abs)
+        db_up = db_update(smiles, tt, tm, vis, frag, cit)
         self.finish('{}'.format(db_up))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
