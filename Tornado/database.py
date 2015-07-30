@@ -2,12 +2,16 @@ import sqlite3
 from sqlite3 import OperationalError
 import sys
 
-def db_edit(smiles, tt, tm, vis, frag, cit):
+columns = ['SMILES', 'TT', 'TM', 'Viscosity', 'Fragility', 'Citation']
+
+def db_edit(**args):
 	conn = sqlite3.connect('GLC.db')
 	c = conn.cursor()
-	#conn.execute("CREATE TABLE GLC(SMILES, TT INT, TM INT, Viscocity INT, Fragility INT, Citation INT)")
-	#conn.execute("alter table GLC add column SMILES, TT, TM, Viscocity, Fragility, Citation")
-	statement = "INSERT INTO GLC (SMILES, TT, TM, Viscocity, Fragility, Citation) VALUES ('{0}',{1},{2},{3},{4},{5})".format(smiles, tt, tm, vis, frag, cit)
+	#conn.execute("CREATE TABLE GLC(SMILES, TT INT, TM INT, Viscosity INT, Fragility INT, Citation INT)")
+	#conn.execute("alter table GLC add column SMILES, TT, TM, Viscosity, Fragility, Citation")
+	#statement = "INSERT INTO GLC (" + reduce(lambda x,y: x + ', ' + y, columns) + ") VALUES ('{0}',{1},{2},{3},{4},'{5}')".format(smiles, tt, tm, vis, frag, cit)
+	#statement = "INSERT INTO GLC (" + reduce(lambda x,y: x + ', ' + y, columns) + ") VALUES ('{0}',{1},{2},{3},{4},{5})".format([(args[int(n)]).encode("ascii") for n in range(len(args))])
+	statement = "INSERT INTO GLC (" + reduce(lambda x,y: x + ', ' + y, columns) + ") VALUES (" + str([(args[ci]).encode("ascii") for ci in columns]).replace("[","").replace("]","")  + ")"
 	try:
 		c.execute(statement)
 	except OperationalError as e:
@@ -38,7 +42,7 @@ def db_update(smiles, tt, tm, vis, frag, cit):
 	c = conn.cursor()
 	c.execute("UPDATE GLC SET TT=? WHERE SMILES=?", (tt,smiles))
 	c.execute("UPDATE GLC SET TM=? WHERE SMILES=?", (tm,smiles))
-	c.execute("UPDATE GLC SET Viscocity=? WHERE SMILES=?", (vis,smiles))
+	c.execute("UPDATE GLC SET Viscosity=? WHERE SMILES=?", (vis,smiles))
 	c.execute("UPDATE GLC SET Fragility=? WHERE SMILES=?", (frag,smiles))
 	c.execute("UPDATE GLC SET Citation=? WHERE SMILES=?", (cit,smiles))
 	conn.commit()
@@ -47,3 +51,5 @@ def db_update(smiles, tt, tm, vis, frag, cit):
 if __name__ == "__main__":
     #db_edit(smiles, tt, tm, vis, frag, cit)
     db_search(sys.argv[1])
+
+

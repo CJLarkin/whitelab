@@ -62,7 +62,8 @@ class DBHandler(tornado.web.RequestHandler):
         vis = self.get_argument('vis','')
         frag = self.get_argument('frag','')
         cit = self.get_argument('cit','')
-        db_entry = db_edit(smiles, tt, tm, vis, frag, cit)
+        db_entry = db_edit(SMILES = "{}".format(smiles), TT = "{}".format(tt), TM = "{}".format(tm), Viscosity = "{}".format(vis), Fragility = "{}".format(frag), Citation = "{}".format(cit))
+        #db_entry = db_edit(smiles, tt, tm, vis, frag, cit)
         self.finish('{}'.format(db_entry))
 
 class ConvHandler(tornado.web.RequestHandler):
