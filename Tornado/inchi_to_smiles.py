@@ -1,4 +1,7 @@
 import openbabel as ob
+from rdkit import Chem
+from rdkit.Chem import Draw
+
 def conv(inchi):
 	conv = ob.OBConversion()
 	conv.SetInAndOutFormats("inchi", "smi")

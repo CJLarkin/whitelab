@@ -9,8 +9,6 @@ def db_edit(**args):
 	c = conn.cursor()
 	#conn.execute("CREATE TABLE GLC(SMILES, TT INT, TM INT, Viscosity INT, Fragility INT, Citation INT)")
 	#conn.execute("alter table GLC add column SMILES, TT, TM, Viscosity, Fragility, Citation")
-	#statement = "INSERT INTO GLC (" + reduce(lambda x,y: x + ', ' + y, columns) + ") VALUES ('{0}',{1},{2},{3},{4},'{5}')".format(smiles, tt, tm, vis, frag, cit)
-	#statement = "INSERT INTO GLC (" + reduce(lambda x,y: x + ', ' + y, columns) + ") VALUES ('{0}',{1},{2},{3},{4},{5})".format([(args[int(n)]).encode("ascii") for n in range(len(args))])
 	statement = "INSERT INTO GLC (" + reduce(lambda x,y: x + ', ' + y, columns) + ") VALUES (" + str([(args[ci]).encode("ascii") for ci in columns]).replace("[","").replace("]","")  + ")"
 	try:
 		c.execute(statement)
@@ -24,27 +22,26 @@ def db_edit(**args):
 def db_search(query):
 	conn = sqlite3.connect('GLC.db')
 	c = conn.cursor()
-	#c.execute("SELECT * FROM GLC;")
-	#return (c.fetchall())
 	if query == "":
 		return {"new": False}
 	else:
 		c.execute("SELECT * FROM GLC WHERE SMILES=?", (query,))
 		all_rows = c.fetchall()
+		print all_rows
 		try:
 			json_dic = {"smiles": all_rows[0][0].encode("ascii"), "tt": all_rows[0][1], "tm": all_rows[0][2], "vis": all_rows[0][3], "frag": all_rows[0][4], "cit": all_rows[0][5]}
 			return json_dic
 		except IndexError:
 			return {"string": query, "new": True}
 
-def db_update(smiles, tt, tm, vis, frag, cit):
+def db_update(**args):
 	conn = sqlite3.connect('GLC.db')
 	c = conn.cursor()
-	c.execute("UPDATE GLC SET TT=? WHERE SMILES=?", (tt,smiles))
-	c.execute("UPDATE GLC SET TM=? WHERE SMILES=?", (tm,smiles))
-	c.execute("UPDATE GLC SET Viscosity=? WHERE SMILES=?", (vis,smiles))
-	c.execute("UPDATE GLC SET Fragility=? WHERE SMILES=?", (frag,smiles))
-	c.execute("UPDATE GLC SET Citation=? WHERE SMILES=?", (cit,smiles))
+	statement = "UPDATE GLC SET"
+	for k,v in args.iteritems():
+		if k != "SMILES":
+			statement += " {} = {},".format(k,v)
+	c.execute(statement[:-1] + " WHERE " + str(columns[0]) + "=" + "'{}'".format(str(args[columns[0]])))
 	conn.commit()
 	conn.close()
 

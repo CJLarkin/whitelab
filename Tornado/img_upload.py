@@ -25,7 +25,7 @@ def decode_base64(data):
 
 
 
-define("port", default=8888, help="run on the given port", type=int)
+define("port", default=8080, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -56,13 +56,10 @@ class UploadHandler(tornado.web.RequestHandler):
 class DBHandler(tornado.web.RequestHandler):
     def post(self):
         self.add_header('Access-Control-Allow-Origin', '*')
-        smiles = self.get_argument('smiles','')
-        tt = self.get_argument('tt','')
-        tm = self.get_argument('tm','')
-        vis = self.get_argument('vis','')
-        frag = self.get_argument('frag','')
-        cit = self.get_argument('cit','')
-        db_entry = db_edit(SMILES = "{}".format(smiles), TT = "{}".format(tt), TM = "{}".format(tm), Viscosity = "{}".format(vis), Fragility = "{}".format(frag), Citation = "{}".format(cit))
+        args = {}
+        for k in self.request.arguments:
+        	args[k] = self.get_argument(k)
+        db_entry = db_edit(**args)
         #db_entry = db_edit(smiles, tt, tm, vis, frag, cit)
         self.finish('{}'.format(db_entry))
 
@@ -71,7 +68,10 @@ class ConvHandler(tornado.web.RequestHandler):
         self.add_header('Access-Control-Allow-Origin', '*')
         inchi = self.get_argument('inchi','')
         smiles = conv(inchi)
-        self.finish('{}'.format(smiles))
+        if smiles == None:
+        	self.finish(None)
+        else:
+        	self.finish('{}'.format(smiles))
 
 class QueryHandler(tornado.web.RequestHandler):
     def post(self):
@@ -83,13 +83,11 @@ class QueryHandler(tornado.web.RequestHandler):
 class DBUpdateHandler(tornado.web.RequestHandler):
     def post(self):
         self.add_header('Access-Control-Allow-Origin', '*')
-        smiles = self.get_argument('smiles','')
-        tt = self.get_argument('tt','')
-        tm = self.get_argument('tm','')
-        vis = self.get_argument('vis','')
-        frag = self.get_argument('frag','')
-        cit = self.get_argument('cit','')
-        db_up = db_update(smiles, tt, tm, vis, frag, cit)
+        args = {}
+        for k in self.request.arguments:
+        	args[k] = self.get_argument(k)
+        db_up = db_update(**args)
+        #db_up = db_update(smiles, tt, tm, vis, frag, cit)
         self.finish('{}'.format(db_up))
 
 class MyHandler(CorsMixin, tornado.web.RequestHandler):
