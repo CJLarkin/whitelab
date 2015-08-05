@@ -25,11 +25,14 @@ def db_search(query):
 	if query == "":
 		return {"new": False}
 	else:
-		c.execute("SELECT * FROM GLC WHERE SMILES=?", (query,))
+		c.execute("SELECT * FROM GLC WHERE " + columns[0] + "=" + "'{}'".format(query))
 		all_rows = c.fetchall()
-		print all_rows
 		try:
-			json_dic = {"smiles": all_rows[0][0].encode("ascii"), "tt": all_rows[0][1], "tm": all_rows[0][2], "vis": all_rows[0][3], "frag": all_rows[0][4], "cit": all_rows[0][5]}
+			json_dic = {}
+			length = int(len(columns))
+			for i in range(length):
+				json_dic[columns[i]] = all_rows[0][i]
+			#json_dic = {"{}".format(columns[i]): all_rows[0][i].encode("ascii"), "{}".format(columns[0]): all_rows[0][1], "TM": all_rows[0][2], "Viscosity": all_rows[0][3], "Fragility": all_rows[0][4], "Citation": all_rows[0][5]}
 			return json_dic
 		except IndexError:
 			return {"string": query, "new": True}

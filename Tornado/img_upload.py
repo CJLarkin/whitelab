@@ -59,6 +59,7 @@ class DBHandler(tornado.web.RequestHandler):
         args = {}
         for k in self.request.arguments:
         	args[k] = self.get_argument(k)
+        print args
         db_entry = db_edit(**args)
         #db_entry = db_edit(smiles, tt, tm, vis, frag, cit)
         self.finish('{}'.format(db_entry))
